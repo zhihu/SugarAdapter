@@ -1,0 +1,53 @@
+/*
+ * Copyright 2018 Zhihu Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import com.android.build.gradle.internal.LoggerWrapper
+import com.android.build.gradle.internal.SdkHandler
+
+apply plugin: 'java'
+apply plugin: 'com.novoda.bintray-release'
+
+// for plugin 'java'
+targetCompatibility = '1.8'
+sourceCompatibility = '1.8'
+
+// https://github.com/JakeWharton/butterknife/pull/380/
+def logger = new LoggerWrapper(project.logger)
+def sdkHandler = new SdkHandler(project, logger)
+for (File file : sdkHandler.sdkLoader.repositories) {
+    repositories.maven {
+        url = file.toURI()
+    }
+}
+
+def ext = rootProject.ext
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':sugaradapter-annotation')
+    implementation 'com.hendraanggrian:r-parser:0.2'
+    compileOnly "androidx.annotation:annotation:${ext.androidx}"
+}
+
+// $ ./gradlew clean build bintrayUpload -PbintrayUser=BINTRAY_USERNAME -PbintrayKey=BINTRAY_KEY -PdryRun=false
+publish {
+    userOrg = 'zhihu'
+    groupId = 'com.zhihu.android'
+    artifactId = 'sugaradapter-processor'
+    publishVersion = "${ext.sugaradapter}"
+    desc = 'SugarAdapter\'s annotation processor'
+    website = 'https://github.com/zhihu/sugaradapter'
+}

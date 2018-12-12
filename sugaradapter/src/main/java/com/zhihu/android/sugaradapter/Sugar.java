@@ -59,6 +59,7 @@ enum Sugar {
             return delegate;
         } catch (Exception e) {
             // e.printStackTrace();
+            // noinspection ConstantConditions
             mInjectMap.put(t.getClass(), null);
             return null;
         }

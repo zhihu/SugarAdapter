@@ -96,9 +96,9 @@ Now you can use ViewHolder easily.
 ## Gradle
 
     dependencies {
-        // migrate to AndroidX, use 1.8.3
-        implementation 'com.zhihu.android:sugaradapter:1.7.5'
-        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.5'
+        // migrate to AndroidX, use 1.8.4
+        implementation 'com.zhihu.android:sugaradapter:1.7.8'
+        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
     }
 
 ## For Android Library
@@ -118,9 +118,9 @@ Second, in your **module's** `build.gradle`:
     }
     
     dependencies {
-        // migrate to AndroidX, use 1.8.3
-        implementation 'com.zhihu.android:sugaradapter:1.7.5' 
-        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.5'
+        // migrate to AndroidX, use 1.8.4
+        implementation 'com.zhihu.android:sugaradapter:1.7.8' 
+        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
     }
 
 Third, in your **main project's** `build.config`:
@@ -136,9 +136,9 @@ Third, in your **main project's** `build.config`:
     }
     
     dependencies {
-        // migrate to AndroidX, use 1.8.3
-        implementation 'com.zhihu.android:sugaradapter:1.7.5' 
-        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.5'
+        // migrate to AndroidX, use 1.8.4
+        implementation 'com.zhihu.android:sugaradapter:1.7.8' 
+        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
     }
 
 The **main project** must have **at least one** subclass of SugarHolder with `@Layout` to toggle AnnotationProcessor.

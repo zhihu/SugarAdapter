@@ -94,9 +94,9 @@ SugarHolder 同时还有一些你可能想要使用或复写的方法：
 ## Gradle
 
     dependencies {
-        // 如果你想要迁移到 AndroidX ，可以使用 1.8.3
-        implementation 'com.zhihu.android:sugaradapter:1.7.5'
-        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.5'
+        // 如果你想要迁移到 AndroidX ，可以使用 1.8.4
+        implementation 'com.zhihu.android:sugaradapter:1.7.8'
+        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
     }
 
 ## 在 Android Library 中使用
@@ -116,9 +116,9 @@ SugarHolder 同时还有一些你可能想要使用或复写的方法：
     }
 
     dependencies {
-        // 如果你想要迁移到 AndroidX ，可以使用 1.8.3
-        implementation 'com.zhihu.android:sugaradapter:1.7.5' 
-        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.5'
+        // 如果你想要迁移到 AndroidX ，可以使用 1.8.4
+        implementation 'com.zhihu.android:sugaradapter:1.7.8' 
+        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
     }
 
 然后，在 **主工程** 的 `build.config` 中配置：
@@ -134,9 +134,9 @@ SugarHolder 同时还有一些你可能想要使用或复写的方法：
     }
 
     dependencies {
-        // 如果你想要迁移到 AndroidX ，可以使用 1.8.3
-        implementation 'com.zhihu.android:sugaradapter:1.7.5' 
-        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.5'
+        // 如果你想要迁移到 AndroidX ，可以使用 1.8.4
+        implementation 'com.zhihu.android:sugaradapter:1.7.8' 
+        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
     }
 
 为了触发 AnnotationProcessor ，在主工程中必须存在**至少一个**被 `@Layout` 注解的 SugarHolder 子类。

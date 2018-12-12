@@ -96,6 +96,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         @NonNull
         private Class<T> ofType() {
             try {
+                // noinspection ConstantConditions
                 String className = ((ParameterizedType) getClass().getGenericSuperclass())
                         .getActualTypeArguments()[0].toString().split(" ")[1];
                 // noinspection unchecked
@@ -113,6 +114,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         @NonNull
         private Class<SH> ofType() {
             try {
+                // noinspection ConstantConditions
                 String className = ((ParameterizedType) getClass().getGenericSuperclass())
                         .getActualTypeArguments()[0].toString().split(" ")[1];
                 // noinspection unchecked
@@ -245,6 +247,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         return mList.size();
     }
 
+    @SuppressWarnings({"ConstantConditions", "unchecked"})
     @Override
     public int getItemViewType(@IntRange(from = 0) int position) {
         Object data = mList.get(position);
@@ -252,7 +255,6 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         Class<? extends SugarHolder> holderClass = null;
         if (mDispatcherMap.containsKey(data.getClass())) {
             Dispatcher dispatcher = mDispatcherMap.get(data.getClass());
-            // noinspection unchecked
             holderClass = dispatcher.dispatch(data);
         }
 

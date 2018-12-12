@@ -125,7 +125,7 @@ public abstract class SugarHolder<T> extends RecyclerView.ViewHolder implements 
         return ContextCompat.getColor(getContext(), colorRes);
     }
 
-    @NonNull
+    @Nullable
     protected final Drawable getDrawable(@DrawableRes int drawableRes) {
         return ContextCompat.getDrawable(getContext(), drawableRes);
     }

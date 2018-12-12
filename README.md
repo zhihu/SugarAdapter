@@ -34,19 +34,21 @@ An usage sample see [this link](https://github.com/zhihu/SugarAdapter/tree/maste
 
 You don't need to extends and override any code of Adapter, just write few lines of builder code:
 
-    mAdapter = SugarAdapter.Builder.with(mList) // eg. List<Object>
-                .add(FooHolder.class) // extends SugarHolder<Foo>
-                .add(BarHolder.class, new SugarHolder.OnCreatedCallback<BarHolder>() { // extends SugarHolder<Bar>
-                    @Override
-                    public void onCreated(@NonNull BarHolder holder) {
-                        // holder.SETTER etc.
-                    }
-                })
-                .build();
-    mRecyclerView.setAdapter(mAdapter);
+```java
+mAdapter = SugarAdapter.Builder.with(mList) // eg. List<Object>
+            .add(FooHolder.class) // extends SugarHolder<Foo>
+            .add(BarHolder.class, new SugarHolder.OnCreatedCallback<BarHolder>() { // extends SugarHolder<Bar>
+                @Override
+                public void onCreated(@NonNull BarHolder holder) {
+                    // holder.SETTER etc.
+                }
+            })
+            .build();
+mRecyclerView.setAdapter(mAdapter);
 
-    // mAdapter.notifyItem* or mAdapter.notifyDataSetChanged()
-    // mAdapter.setExtraDelegate() with onAttachedToRecyclerView()/onDetachedFromRecyclerView()
+// mAdapter.notifyItem* or mAdapter.notifyDataSetChanged()
+// mAdapter.setExtraDelegate() with onAttachedToRecyclerView()/onDetachedFromRecyclerView()
+```
 
 That's all!
 
@@ -54,24 +56,26 @@ That's all!
 
 Layout - ViewType - Data, trinity, so we must extends SugarHolder as below:
 
-    // Annotated subclass must be public and final; R.layout.foo also as ViewType
-    @Layout(R.layout.foo) 
-    public final class FooHolder extends SugarHolder<Foo> {
-        // If you don't want to write findViewById(), 
-        // just annotate view with @Id(), and make it **public**;
-        // @Id() can only work with **final** class too
-        @Id(R.id.text);
-        public TextView mTextView;
+```java
+// Annotated subclass must be public and final; R.layout.foo also as ViewType
+@Layout(R.layout.foo) 
+public final class FooHolder extends SugarHolder<Foo> {
+    // If you don't want to write findViewById(), 
+    // just annotate view with @Id(), and make it **public**;
+    // @Id() can only work with **final** class too
+    @Id(R.id.text);
+    public TextView mTextView;
 
-        public FooHolder(@NonNull View view) {
-            super(view);
-        }
-
-        @Override
-        pubilc void onBindData(@NonNull Foo foo) {
-            mTextView.setText(foo.getText());
-        }
+    public FooHolder(@NonNull View view) {
+        super(view);
     }
+
+    @Override
+    pubilc void onBindData(@NonNull Foo foo) {
+        mTextView.setText(foo.getText());
+    }
+}
+```
 
 SugarHolder also has some methods which you may want to use or override:
 
@@ -95,11 +99,13 @@ Now you can use ViewHolder easily.
 
 ## Gradle
 
-    dependencies {
-        // migrate to AndroidX, use 1.8.4
-        implementation 'com.zhihu.android:sugaradapter:1.7.8'
-        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
-    }
+```groovy
+dependencies {
+    // migrate to AndroidX, use 1.8.4
+    implementation 'com.zhihu.android:sugaradapter:1.7.8'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
+}
+```
 
 ## For Android Library
 
@@ -107,39 +113,43 @@ First, add the [ButterKnife's plugin](https://github.com/JakeWharton/butterknife
 
 Second, in your **module's** `build.gradle`:
 
-    android {
-        defaultConfig {
-            javaCompileOptions {
-                annotationProcessorOptions {
-                    arguments = [moduleNameOfSugarAdapter: 'YOUR_MODULE_NAME']
-                }
+```groovy
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleNameOfSugarAdapter: 'YOUR_MODULE_NAME']
             }
         }
     }
-    
-    dependencies {
-        // migrate to AndroidX, use 1.8.4
-        implementation 'com.zhihu.android:sugaradapter:1.7.8' 
-        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
-    }
+}
+
+dependencies {
+    // migrate to AndroidX, use 1.8.4
+    implementation 'com.zhihu.android:sugaradapter:1.7.8' 
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
+}
+```
 
 Third, in your **main project's** `build.config`:
 
-    android {
-        defaultConfig {
-            javaCompileOptions {
-                annotationProcessorOptions {
-                    arguments = [subModulesOfSugarAdapter: 'YOUR_MODULE_NAME_1, YOUR_MODULE_NAME_...']
-                }
+```groovy
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [subModulesOfSugarAdapter: 'YOUR_MODULE_NAME_1, YOUR_MODULE_NAME_...']
             }
         }
     }
-    
-    dependencies {
-        // migrate to AndroidX, use 1.8.4
-        implementation 'com.zhihu.android:sugaradapter:1.7.8' 
-        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
-    }
+}
+
+dependencies {
+    // migrate to AndroidX, use 1.8.4
+    implementation 'com.zhihu.android:sugaradapter:1.7.8' 
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
+}
+```
 
 The **main project** must have **at least one** subclass of SugarHolder with `@Layout` to toggle AnnotationProcessor.
 

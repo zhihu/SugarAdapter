@@ -32,19 +32,21 @@ Make [RecyclerView.Adapter](https://developer.android.com/reference/android/supp
 
 你不需要继承并复写 Adapter ，只需要写几行 Builder 模式的代码即可：
 
-    mAdapter = SugarAdapter.Builder.with(mList) // eg. List<Object>
-                .add(FooHolder.class) // extends SugarHolder<Foo>
-                .add(BarHolder.class, new SugarHolder.OnCreatedCallback<BarHolder>() { // extends SugarHolder<Bar>
-                    @Override
-                    public void onCreated(@NonNull BarHolder holder) {
-                        // holder.SETTER etc.
-                    }
-                })
-                .build();
-    mRecyclerView.setAdapter(mAdapter);
+```java
+mAdapter = SugarAdapter.Builder.with(mList) // eg. List<Object>
+            .add(FooHolder.class) // extends SugarHolder<Foo>
+            .add(BarHolder.class, new SugarHolder.OnCreatedCallback<BarHolder>() { // extends SugarHolder<Bar>
+                @Override
+                public void onCreated(@NonNull BarHolder holder) {
+                    // holder.SETTER etc.
+                }
+            })
+            .build();
+mRecyclerView.setAdapter(mAdapter);
 
-    // mAdapter.notifyItem* or mAdapter.notifyDataSetChanged()
-    // mAdapter.setExtraDelegate() with onAttachedToRecyclerView()/onDetachedFromRecyclerView()
+// mAdapter.notifyItem* or mAdapter.notifyDataSetChanged()
+// mAdapter.setExtraDelegate() with onAttachedToRecyclerView()/onDetachedFromRecyclerView()
+```
 
 这样我们就创建了一个 Adapter ，就是这么简单！
 
@@ -52,24 +54,26 @@ Make [RecyclerView.Adapter](https://developer.android.com/reference/android/supp
 
 Layout - ViewType - Data ，三位一体，所以我们要必须这样使用 SugarHolder ：
 
-    // 务必注解的保证子类是 public 和 final 的；R.layout.foo 同时也是 ViewType
-    @Layout(R.layout.foo) 
-    public final class FooHolder extends SugarHolder<Foo> {
-        // 如果你不想手写 findViewById() 代码，
-        // 只需要给定义的 View 加上 @Id() 注解，并且保证它为 public 的即可；
-        // @Id() 同样只能作用于 **final** class
-        @Id(R.id.text);
-        public TextView mTextView;
+```java
+// 务必注解的保证子类是 public 和 final 的；R.layout.foo 同时也是 ViewType
+@Layout(R.layout.foo) 
+public final class FooHolder extends SugarHolder<Foo> {
+    // 如果你不想手写 findViewById() 代码，
+    // 只需要给定义的 View 加上 @Id() 注解，并且保证它为 public 的即可；
+    // @Id() 同样只能作用于 **final** class
+    @Id(R.id.text);
+    public TextView mTextView;
 
-        public FooHolder(@NonNull View view) {
-            super(view);
-        }
-
-        @Override
-        pubilc void onBindData(@NonNull Foo foo) {
-            mTextView.setText(foo.getText());
-        }
+    public FooHolder(@NonNull View view) {
+        super(view);
     }
+
+    @Override
+    pubilc void onBindData(@NonNull Foo foo) {
+        mTextView.setText(foo.getText());
+    }
+}
+```
 
 SugarHolder 同时还有一些你可能想要使用或复写的方法：
 
@@ -93,11 +97,13 @@ SugarHolder 同时还有一些你可能想要使用或复写的方法：
 
 ## Gradle
 
-    dependencies {
-        // 如果你想要迁移到 AndroidX ，可以使用 1.8.4
-        implementation 'com.zhihu.android:sugaradapter:1.7.8'
-        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
-    }
+```groovy
+dependencies {
+    // 如果你想要迁移到 AndroidX ，可以使用 1.8.4
+    implementation 'com.zhihu.android:sugaradapter:1.7.8'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
+}
+```
 
 ## 在 Android Library 中使用
 
@@ -105,39 +111,43 @@ SugarHolder 同时还有一些你可能想要使用或复写的方法：
 
 接着，在 **module** 的 `build.config` 中配置：
 
-    android {
-        defaultConfig {
-            javaCompileOptions {
-                annotationProcessorOptions {
-                    arguments = [moduleNameOfSugarAdapter: 'YOUR_MODULE_NAME']
-                }
+```groovy
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleNameOfSugarAdapter: 'YOUR_MODULE_NAME']
             }
         }
     }
+}
 
-    dependencies {
-        // 如果你想要迁移到 AndroidX ，可以使用 1.8.4
-        implementation 'com.zhihu.android:sugaradapter:1.7.8' 
-        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
-    }
+dependencies {
+    // 如果你想要迁移到 AndroidX ，可以使用 1.8.4
+    implementation 'com.zhihu.android:sugaradapter:1.7.8' 
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
+}
+```
 
 然后，在 **主工程** 的 `build.config` 中配置：
 
-    android {
-        defaultConfig {
-            javaCompileOptions {
-                annotationProcessorOptions {
-                    arguments = [subModulesOfSugarAdapter: 'YOUR_MODULE_NAME_1, YOUR_MODULE_NAME_...']
-                }
+```groovy
+android {
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [subModulesOfSugarAdapter: 'YOUR_MODULE_NAME_1, YOUR_MODULE_NAME_...']
             }
         }
     }
+}
 
-    dependencies {
-        // 如果你想要迁移到 AndroidX ，可以使用 1.8.4
-        implementation 'com.zhihu.android:sugaradapter:1.7.8' 
-        annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
-    }
+dependencies {
+    // 如果你想要迁移到 AndroidX ，可以使用 1.8.4
+    implementation 'com.zhihu.android:sugaradapter:1.7.8' 
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
+}
+```
 
 为了触发 AnnotationProcessor ，在主工程中必须存在**至少一个**被 `@Layout` 注解的 SugarHolder 子类。
 

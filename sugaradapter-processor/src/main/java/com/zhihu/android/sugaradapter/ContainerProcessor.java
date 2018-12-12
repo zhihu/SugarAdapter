@@ -16,22 +16,34 @@
 
 package com.zhihu.android.sugaradapter;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.hendraanggrian.RParser;
 
-import javax.annotation.processing.*;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.FilerException;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.JavaFileObject;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @SupportedAnnotationTypes("com.zhihu.android.sugaradapter.Layout")
 @SupportedOptions({ContainerProcessor.OPTION_MODULE_NAME, ContainerProcessor.OPTION_SUB_MODULES})
@@ -131,8 +143,8 @@ public class ContainerProcessor extends AbstractProcessor {
         String packageName = "com.zhihu.android.sugaradapter";
         builder.append("package ").append(packageName).append(";\n\n");
 
-        builder.append("import androidx.annotation.LayoutRes;\n");
-        builder.append("import androidx.annotation.NonNull;\n\n");
+        builder.append("import android.support.annotation.LayoutRes;\n");
+        builder.append("import android.support.annotation.NonNull;\n\n");
 
         builder.append("import java.util.HashMap;\n");
         builder.append("import java.util.Map;\n\n");

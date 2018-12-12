@@ -16,7 +16,7 @@
 
 package com.zhihu.android.sugaradapter;
 
-import androidx.annotation.LayoutRes;
+import android.support.annotation.LayoutRes;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

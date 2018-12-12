@@ -45,7 +45,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "androidx.appcompat:appcompat:${ext.androidx}"
+    implementation "com.android.support:appcompat-v7:${ext.support}"
 
     // SugarAdapter
     // implementation "com.zhihu.android:sugaradapter:${ext.sugaradapter}"

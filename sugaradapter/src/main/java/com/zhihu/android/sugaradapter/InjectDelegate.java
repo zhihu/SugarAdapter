@@ -16,8 +16,8 @@
 
 package com.zhihu.android.sugaradapter;
 
+import android.support.annotation.NonNull;
 import android.view.View;
-import androidx.annotation.NonNull;
 
 public interface InjectDelegate {
     <SH extends SugarHolder> void injectView(@NonNull SH sh, @NonNull View view);

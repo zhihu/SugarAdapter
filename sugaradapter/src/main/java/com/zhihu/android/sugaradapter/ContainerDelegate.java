@@ -16,8 +16,8 @@
 
 package com.zhihu.android.sugaradapter;
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 
 public interface ContainerDelegate {
     @LayoutRes

@@ -39,7 +39,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':sugaradapter-annotation')
     implementation 'com.hendraanggrian:r-parser:0.2'
-    compileOnly "androidx.annotation:annotation:${ext.androidx}"
+    compileOnly "com.android.support:support-annotations:${ext.support}"
 }
 
 // $ ./gradlew clean build bintrayUpload -PbintrayUser=BINTRAY_USERNAME -PbintrayKey=BINTRAY_KEY -PdryRun=false

@@ -16,9 +16,9 @@
 
 package com.zhihu.android.sugaradapter;
 
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 class Container {
     private Class<? extends SugarHolder> mHolderClass;

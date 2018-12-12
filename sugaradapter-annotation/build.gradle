@@ -37,7 +37,7 @@ def ext = rootProject.ext
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    compileOnly "androidx.annotation:annotation:${ext.androidx}"
+    compileOnly "com.android.support:support-annotations:${ext.support}"
 }
 
 // $ ./gradlew clean build bintrayUpload -PbintrayUser=BINTRAY_USERNAME -PbintrayKey=BINTRAY_KEY -PdryRun=false

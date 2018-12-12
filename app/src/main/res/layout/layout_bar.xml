@@ -23,11 +23,11 @@
              android:clickable="true"
              android:focusable="true">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp">
-    </androidx.appcompat.widget.AppCompatTextView>
+    </android.support.v7.widget.AppCompatTextView>
 
 </FrameLayout>

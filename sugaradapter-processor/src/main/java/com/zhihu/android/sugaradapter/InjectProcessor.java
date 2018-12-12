@@ -16,18 +16,30 @@
 
 package com.zhihu.android.sugaradapter;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
+
 import com.hendraanggrian.RParser;
 
-import javax.annotation.processing.*;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.tools.JavaFileObject;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.*;
 
 @SupportedAnnotationTypes("com.zhihu.android.sugaradapter.Id")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
@@ -112,7 +124,7 @@ public class InjectProcessor extends AbstractProcessor {
 
             builder.append("import android.annotation.SuppressLint;\n");
             builder.append("import android.view.View;\n");
-            builder.append("import androidx.annotation.NonNull;\n\n");
+            builder.append("import android.support.annotation.NonNull;\n\n");
 
             builder.append("import com.zhihu.android.sugaradapter.InjectDelegate;\n");
             builder.append("import com.zhihu.android.sugaradapter.SugarHolder;\n\n");

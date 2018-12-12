@@ -16,7 +16,7 @@
 
 package com.zhihu.android.sugaradapterdemo.item;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 public final class Bar {
     private String mText;

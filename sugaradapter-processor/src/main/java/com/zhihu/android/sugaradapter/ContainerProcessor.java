@@ -166,9 +166,11 @@ public class ContainerProcessor extends AbstractProcessor {
             for (String moduleName : subModules.split(",")) {
                 String moduleClassName = generateClassName(moduleName);
                 builder.append("        mLayoutResMap.putAll(new ")
-                        .append(moduleClassName).append("().getLayoutResMap());\n");
+                        .append(moduleClassName).append("().getLayoutResMap());")
+                        .append(" // ").append(moduleName).append("\n");
                 builder.append("        mDataClassMap.putAll(new ")
-                        .append(moduleClassName).append("().getDataClassMap());\n");
+                        .append(moduleClassName).append("().getDataClassMap());")
+                        .append(" // ").append(moduleName).append("\n");
             }
         }
 

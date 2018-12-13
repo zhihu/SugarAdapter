@@ -17,6 +17,7 @@
 package com.zhihu.android.sugaradapter;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 class InjectInfo {
     private String mViewName;
@@ -42,5 +43,35 @@ class InjectInfo {
     @NonNull
     String getViewIdStr() {
         return mViewIdStr;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        InjectInfo that = (InjectInfo) obj;
+        if (!mViewName.equals(that.getViewName())) {
+            return false;
+        }
+
+        if (!mViewType.equals(that.getViewType())) {
+            return false;
+        }
+
+        return mViewIdStr.equals(that.getViewIdStr());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mViewName.hashCode();
+        result = 31 * result + mViewType.hashCode();
+        result = 31 * result + mViewIdStr.hashCode();
+        return result;
     }
 }

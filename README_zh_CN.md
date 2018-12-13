@@ -34,14 +34,14 @@ Make [RecyclerView.Adapter](https://developer.android.com/reference/android/supp
 
 ```java
 mAdapter = SugarAdapter.Builder.with(mList) // eg. List<Object>
-            .add(FooHolder.class) // extends SugarHolder<Foo>
-            .add(BarHolder.class, new SugarHolder.OnCreatedCallback<BarHolder>() { // extends SugarHolder<Bar>
-                @Override
-                public void onCreated(@NonNull BarHolder holder) {
-                    // holder.SETTER etc.
-                }
-            })
-            .build();
+        .add(FooHolder.class) // extends SugarHolder<Foo>
+        .add(BarHolder.class, new SugarHolder.OnCreatedCallback<BarHolder>() { // extends SugarHolder<Bar>
+            @Override
+            public void onCreated(@NonNull BarHolder holder) {
+                // holder.SETTER etc.
+            }
+        })
+        .build();
 mRecyclerView.setAdapter(mAdapter);
 
 // mAdapter.notifyItem* or mAdapter.notifyDataSetChanged()
@@ -61,7 +61,7 @@ public final class FooHolder extends SugarHolder<Foo> {
     // 如果你不想手写 findViewById() 代码，
     // 只需要给定义的 View 加上 @Id() 注解，并且保证它为 public 的即可；
     // @Id() 同样只能作用于 **final** class
-    @Id(R.id.text);
+    @Id(R.id.text)
     public TextView mTextView;
 
     public FooHolder(@NonNull View view) {

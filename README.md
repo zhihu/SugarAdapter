@@ -36,14 +36,14 @@ You don't need to extends and override any code of Adapter, just write few lines
 
 ```java
 mAdapter = SugarAdapter.Builder.with(mList) // eg. List<Object>
-            .add(FooHolder.class) // extends SugarHolder<Foo>
-            .add(BarHolder.class, new SugarHolder.OnCreatedCallback<BarHolder>() { // extends SugarHolder<Bar>
-                @Override
-                public void onCreated(@NonNull BarHolder holder) {
-                    // holder.SETTER etc.
-                }
-            })
-            .build();
+        .add(FooHolder.class) // extends SugarHolder<Foo>
+        .add(BarHolder.class, new SugarHolder.OnCreatedCallback<BarHolder>() { // extends SugarHolder<Bar>
+            @Override
+            public void onCreated(@NonNull BarHolder holder) {
+                // holder.SETTER etc.
+            }
+        })
+        .build();
 mRecyclerView.setAdapter(mAdapter);
 
 // mAdapter.notifyItem* or mAdapter.notifyDataSetChanged()
@@ -63,7 +63,7 @@ public final class FooHolder extends SugarHolder<Foo> {
     // If you don't want to write findViewById(), 
     // just annotate view with @Id(), and make it **public**;
     // @Id() can only work with **final** class too
-    @Id(R.id.text);
+    @Id(R.id.text)
     public TextView mTextView;
 
     public FooHolder(@NonNull View view) {

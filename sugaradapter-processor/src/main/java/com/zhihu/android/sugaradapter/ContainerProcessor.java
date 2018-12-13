@@ -47,7 +47,7 @@ public class ContainerProcessor extends AbstractProcessor {
     public synchronized void init(@NonNull ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         mRParser = RParser.builder(processingEnvironment)
-                .setSupportedAnnotations(new HashSet<>(Collections.singleton(Layout.class)))
+                .setSupportedAnnotations(Collections.singleton(Layout.class))
                 .setSupportedTypes("layout")
                 .build();
     }

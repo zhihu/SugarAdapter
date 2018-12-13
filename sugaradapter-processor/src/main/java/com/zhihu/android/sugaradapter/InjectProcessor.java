@@ -45,7 +45,7 @@ public class InjectProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(@NonNull Set<? extends TypeElement> annotations, @NonNull RoundEnvironment roundEnv) {
-        Map<String, List<InjectInfo>> map = new HashMap<>();
+        Map<String, Set<InjectInfo>> map = new HashMap<>();
         mRParser.scan(roundEnv);
 
         for (Element element : roundEnv.getElementsAnnotatedWith(Id.class)) {
@@ -80,14 +80,14 @@ public class InjectProcessor extends AbstractProcessor {
                     throw new IllegalStateException("process " + holderClass + " failed!");
                 }
 
-                List<InjectInfo> list = map.get(holderClass);
+                Set<InjectInfo> set = map.get(holderClass);
                 InjectInfo info = new InjectInfo(viewName, viewType, viewIdStr);
-                if (list == null) {
-                    list = new ArrayList<>();
-                    list.add(info);
-                    map.put(holderClass, list);
+                if (set == null) {
+                    set = new HashSet<>();
+                    set.add(info);
+                    map.put(holderClass, set);
                 } else {
-                    list.add(info);
+                    set.add(info);
                 }
             }
         }
@@ -99,7 +99,7 @@ public class InjectProcessor extends AbstractProcessor {
         return true;
     }
 
-    private void generateInjectDelegateImpl(@NonNull Map<String, List<InjectInfo>> map) {
+    private void generateInjectDelegateImpl(@NonNull Map<String, Set<InjectInfo>> map) {
         for (String holderClass : map.keySet()) {
             StringBuilder builder = new StringBuilder();
             int lastIndex = holderClass.lastIndexOf(".");

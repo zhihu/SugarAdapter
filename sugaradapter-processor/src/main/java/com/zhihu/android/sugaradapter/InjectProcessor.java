@@ -50,7 +50,7 @@ public class InjectProcessor extends AbstractProcessor {
     public synchronized void init(@NonNull ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         mRParser = RParser.builder(processingEnvironment)
-                .setSupportedAnnotations(new HashSet<>(Collections.singleton(Layout.class)))
+                .setSupportedAnnotations(Collections.singleton(Id.class))
                 .setSupportedTypes("id")
                 .build();
     }

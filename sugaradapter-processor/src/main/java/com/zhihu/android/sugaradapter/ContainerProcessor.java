@@ -54,6 +54,14 @@ public class ContainerProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(@NonNull Set<? extends TypeElement> annotations, @NonNull RoundEnvironment roundEnv) {
+        processLayout(annotations, roundEnv);
+        return true;
+    }
+
+    // <editor-fold desc="@Layout">
+
+    @SuppressWarnings("unused")
+    private void processLayout(@NonNull Set<? extends TypeElement> annotations, @NonNull RoundEnvironment roundEnv) {
         Map<String, Pair> map = new HashMap<>();
         mRParser.scan(roundEnv);
 
@@ -122,8 +130,6 @@ public class ContainerProcessor extends AbstractProcessor {
                 }
             }
         }
-
-        return true;
     }
 
     private void generateContainerDelegateImpl(@NonNull Map<String, Pair> map) throws IOException {
@@ -215,4 +221,6 @@ public class ContainerProcessor extends AbstractProcessor {
             return "ContainerDelegateImpl" + Math.abs(moduleName.trim().hashCode());
         }
     }
+
+    // </editor-fold>
 }

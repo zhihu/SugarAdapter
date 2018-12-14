@@ -48,8 +48,8 @@ public class SugarProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(@NonNull Set<? extends TypeElement> annotations, @NonNull RoundEnvironment roundEnv) {
-        processLayout(roundEnv);
-        processId(roundEnv);
+        // not pure function but just work :/
+        processId(roundEnv, processLayout(roundEnv));
         return true;
     }
 
@@ -63,7 +63,7 @@ public class SugarProcessor extends AbstractProcessor {
                 .build();
         parser.scan(roundEnv);
 
-        Map<String, Pair> injectInfoMap = new HashMap<>();
+        Map<String, Pair> containerMap = new HashMap<>();
         Map<String, Set<String>> superclassMap = new HashMap<>();
         for (Element element : roundEnv.getElementsAnnotatedWith(Layout.class)) {
             if (element instanceof TypeElement) {
@@ -106,7 +106,7 @@ public class SugarProcessor extends AbstractProcessor {
                     throw new IllegalStateException("process " + holderClass + " failed!");
                 }
 
-                injectInfoMap.put(holderClass, new Pair(layoutResStr, dataClass));
+                containerMap.put(holderClass, new Pair(layoutResStr, dataClass));
 
                 // find all available superclass for next step process @Id
                 mirror = ((TypeElement) element).getSuperclass();
@@ -128,15 +128,15 @@ public class SugarProcessor extends AbstractProcessor {
 
         String moduleName = processingEnv.getOptions().get(OPTION_MODULE_NAME);
         String subModules = processingEnv.getOptions().get(OPTION_SUB_MODULES);
-        if (moduleName != null && moduleName.length() > 0 && !injectInfoMap.isEmpty()) {
+        if (moduleName != null && moduleName.length() > 0 && !containerMap.isEmpty()) {
             try {
-                generateContainerDelegateImpl(injectInfoMap);
+                generateContainerDelegateImpl(containerMap);
             } catch (@NonNull Exception e) {
                 throw new IllegalStateException(e);
             }
-        } else if (subModules != null && subModules.length() > 0 || !injectInfoMap.isEmpty()) {
+        } else if (subModules != null && subModules.length() > 0 || !containerMap.isEmpty()) {
             try {
-                generateContainerDelegateImpl(injectInfoMap);
+                generateContainerDelegateImpl(containerMap);
             } catch (@NonNull Exception e) {
                 // noinspection StatementWithEmptyBody
                 if (e instanceof FilerException) {
@@ -244,14 +244,14 @@ public class SugarProcessor extends AbstractProcessor {
 
     // <editor-fold desc="@Id">
 
-    private void processId(@NonNull RoundEnvironment roundEnv) {
+    private void processId(@NonNull RoundEnvironment roundEnv, Map<String, Set<String>> superclassMap) {
         RParser parser = RParser.builder(processingEnv)
                 .setSupportedAnnotations(Collections.singleton(Id.class))
                 .setSupportedTypes("id")
                 .build();
         parser.scan(roundEnv);
 
-        Map<String, Set<InjectInfo>> map = new HashMap<>();
+        Map<String, Set<InjectInfo>> injectInfoMap = new HashMap<>();
         for (Element element : roundEnv.getElementsAnnotatedWith(Id.class)) {
             if (element instanceof VariableElement) {
                 String holderClass = ((TypeElement) element.getEnclosingElement()).getQualifiedName().toString();
@@ -284,20 +284,35 @@ public class SugarProcessor extends AbstractProcessor {
                     throw new IllegalStateException("process " + holderClass + " failed!");
                 }
 
-                Set<InjectInfo> set = map.get(holderClass);
+                Set<InjectInfo> set = injectInfoMap.get(holderClass);
                 InjectInfo info = new InjectInfo(viewName, viewType, viewIdStr);
                 if (set == null) {
                     set = new HashSet<>();
                     set.add(info);
-                    map.put(holderClass, set);
+                    injectInfoMap.put(holderClass, set);
                 } else {
                     set.add(info);
                 }
             }
         }
 
-        if (!map.isEmpty()) {
-            generateInjectDelegateImpl(map);
+        // put all superclass @Id to current class
+        for (String holderClass : superclassMap.keySet()) {
+            for (String superclass : superclassMap.get(holderClass)) {
+                if (injectInfoMap.containsKey(superclass)) {
+                    Set<InjectInfo> set = injectInfoMap.get(holderClass);
+                    if (set == null) {
+                        set = new HashSet<>(injectInfoMap.get(superclass));
+                        injectInfoMap.put(holderClass, set);
+                    } else  {
+                        set.addAll(injectInfoMap.get(superclass));
+                    }
+                }
+            }
+        }
+
+        if (!injectInfoMap.isEmpty()) {
+            generateInjectDelegateImpl(injectInfoMap);
         }
     }
 

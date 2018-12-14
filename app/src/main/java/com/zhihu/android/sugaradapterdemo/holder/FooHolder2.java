@@ -20,13 +20,15 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import com.zhihu.android.sugaradapterdemo.item.Foo;
 
-public class FooHolder2 extends FooHolder {
+// Just extends FooHolder with same data,
+// so you need to use SugarAdapter#addDispatcher
+public final class FooHolder2 extends FooHolder {
     public FooHolder2(@NonNull View view) {
         super(view);
     }
 
     @Override
-    public void onBindData(@NonNull Foo foo) {
+    protected void onBindData(@NonNull Foo foo) {
         String text = foo.getText() + " - FooHolder2";
         mTextView.setText(text);
     }

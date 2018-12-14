@@ -30,12 +30,13 @@ public class FooHolder extends BaseHolder<Foo> {
     @Id(R.id.text)
     public AppCompatTextView mTextView;
 
+    @SuppressWarnings("WeakerAccess")
     public FooHolder(@NonNull View view) {
         super(view);
     }
 
     @Override
-    public void onBindData(@NonNull Foo foo) {
+    protected void onBindData(@NonNull Foo foo) {
         mTextView.setText(foo.getText());
     }
 

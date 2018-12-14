@@ -53,8 +53,8 @@ public final class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(this, RecyclerView.VERTICAL));
 
         // Choose one of usage example
-        // simpleUsageExample(recyclerView);
-        singleDataMultiHolderExample(recyclerView);
+        simpleUsageExample(recyclerView);
+        // singleDataMultiHolderExample(recyclerView);
         // sugarHolderListenerExample(recyclerView);
         // lifecycleAwareExample(recyclerView);
     }

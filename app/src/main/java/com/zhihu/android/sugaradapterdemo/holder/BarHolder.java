@@ -49,7 +49,7 @@ public final class BarHolder extends SugarHolder<Bar> {
     }
 
     @Override
-    public void onBindData(@NonNull Bar bar) {
+    protected void onBindData(@NonNull Bar bar) {
         mTextView.setText(bar.getText());
     }
 

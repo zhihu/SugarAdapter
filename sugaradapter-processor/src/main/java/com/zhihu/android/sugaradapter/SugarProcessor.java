@@ -34,10 +34,12 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SupportedAnnotationTypes({"com.zhihu.android.sugaradapter.Layout", "com.zhihu.android.sugaradapter.Id"})
-@SupportedOptions({ContainerProcessor.OPTION_MODULE_NAME, ContainerProcessor.OPTION_SUB_MODULES})
+@SupportedAnnotationTypes({SugarProcessor.ANNOTATION_TYPE_LAYOUT, SugarProcessor.ANNOTATION_TYPE_ID})
+@SupportedOptions({SugarProcessor.OPTION_MODULE_NAME, SugarProcessor.OPTION_SUB_MODULES})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-public class ContainerProcessor extends AbstractProcessor {
+public class SugarProcessor extends AbstractProcessor {
+    static final String ANNOTATION_TYPE_LAYOUT = "com.zhihu.android.sugaradapter.Layout";
+    static final String ANNOTATION_TYPE_ID = "com.zhihu.android.sugaradapter.Id";
     static final String OPTION_MODULE_NAME = "moduleNameOfSugarAdapter";
     static final String OPTION_SUB_MODULES = "subModulesOfSugarAdapter";
 

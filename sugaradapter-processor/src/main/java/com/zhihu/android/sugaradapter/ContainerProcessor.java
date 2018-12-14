@@ -24,6 +24,7 @@ import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.JavaFileObject;
@@ -33,7 +34,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@SupportedAnnotationTypes("com.zhihu.android.sugaradapter.Layout")
+@SupportedAnnotationTypes({"com.zhihu.android.sugaradapter.Layout", "com.zhihu.android.sugaradapter.Id"})
 @SupportedOptions({ContainerProcessor.OPTION_MODULE_NAME, ContainerProcessor.OPTION_SUB_MODULES})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ContainerProcessor extends AbstractProcessor {
@@ -41,29 +42,36 @@ public class ContainerProcessor extends AbstractProcessor {
     static final String OPTION_SUB_MODULES = "subModulesOfSugarAdapter";
 
     private static final Pattern TYPE_PARAM_PATTERN = Pattern.compile("(.*?)<(.*?)>");
-    private RParser mRParser;
+    private RParser mLayoutParser;
+    private RParser mIdParser;
 
     @Override
     public synchronized void init(@NonNull ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
-        mRParser = RParser.builder(processingEnvironment)
+
+        mLayoutParser = RParser.builder(processingEnvironment)
                 .setSupportedAnnotations(Collections.singleton(Layout.class))
                 .setSupportedTypes("layout")
+                .build();
+
+        mIdParser = RParser.builder(processingEnvironment)
+                .setSupportedAnnotations(Collections.singleton(Id.class))
+                .setSupportedTypes("id")
                 .build();
     }
 
     @Override
     public boolean process(@NonNull Set<? extends TypeElement> annotations, @NonNull RoundEnvironment roundEnv) {
-        processLayout(annotations, roundEnv);
+        processLayout(roundEnv);
+        processId(roundEnv);
         return true;
     }
 
     // <editor-fold desc="@Layout">
 
-    @SuppressWarnings("unused")
-    private void processLayout(@NonNull Set<? extends TypeElement> annotations, @NonNull RoundEnvironment roundEnv) {
+    private void processLayout(@NonNull RoundEnvironment roundEnv) {
         Map<String, Pair> map = new HashMap<>();
-        mRParser.scan(roundEnv);
+        mLayoutParser.scan(roundEnv);
 
         for (Element element : roundEnv.getElementsAnnotatedWith(Layout.class)) {
             if (element instanceof TypeElement) {
@@ -96,7 +104,7 @@ public class ContainerProcessor extends AbstractProcessor {
                         packageName = packageName + "." + path;
                     }
 
-                    layoutResStr = mRParser.parse(packageName, layoutRes);
+                    layoutResStr = mLayoutParser.parse(packageName, layoutRes);
                     if (!layoutResStr.equals(String.valueOf(layoutRes))) {
                         break;
                     }
@@ -219,6 +227,110 @@ public class ContainerProcessor extends AbstractProcessor {
         } else {
             // abs(hashCode) maybe conflict, for huge project :P
             return "ContainerDelegateImpl" + Math.abs(moduleName.trim().hashCode());
+        }
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="@Id">
+
+    private void processId(@NonNull RoundEnvironment roundEnv) {
+        Map<String, Set<InjectInfo>> map = new HashMap<>();
+        mIdParser.scan(roundEnv);
+
+        for (Element element : roundEnv.getElementsAnnotatedWith(Id.class)) {
+            if (element instanceof VariableElement) {
+                String holderClass = ((TypeElement) element.getEnclosingElement()).getQualifiedName().toString();
+
+                VariableElement ve = (VariableElement) element;
+                String viewName = ve.getSimpleName().toString();
+                String viewType = ve.asType().toString();
+
+                int viewId = element.getAnnotation(Id.class).value();
+                if (viewId == 0) {
+                    throw new IllegalStateException("process " + holderClass + " failed!");
+                }
+
+                String viewIdStr = null;
+                String packageName = null;
+                for (String path : holderClass.split("\\.")) {
+                    if (packageName == null) {
+                        packageName = path;
+                    } else {
+                        packageName = packageName + "." + path;
+                    }
+
+                    viewIdStr = mIdParser.parse(packageName, viewId);
+                    if (!viewIdStr.equals(String.valueOf(viewId))) {
+                        break;
+                    }
+                }
+
+                if (viewIdStr == null || viewIdStr.equals(String.valueOf(viewId))) {
+                    throw new IllegalStateException("process " + holderClass + " failed!");
+                }
+
+                Set<InjectInfo> set = map.get(holderClass);
+                InjectInfo info = new InjectInfo(viewName, viewType, viewIdStr);
+                if (set == null) {
+                    set = new HashSet<>();
+                    set.add(info);
+                    map.put(holderClass, set);
+                } else {
+                    set.add(info);
+                }
+            }
+        }
+
+        if (!map.isEmpty()) {
+            generateInjectDelegateImpl(map);
+        }
+    }
+
+    private void generateInjectDelegateImpl(@NonNull Map<String, Set<InjectInfo>> map) {
+        for (String holderClass : map.keySet()) {
+            StringBuilder builder = new StringBuilder();
+            int lastIndex = holderClass.lastIndexOf(".");
+            if (lastIndex < 0) {
+                lastIndex = 0;
+            }
+
+            String className = holderClass.substring(lastIndex + 1, holderClass.length()) + "$InjectDelegateImpl";
+            builder.append("package ").append(holderClass, 0, lastIndex).append(";\n\n");
+
+            builder.append("import android.annotation.SuppressLint;\n");
+            builder.append("import android.view.View;\n");
+            builder.append("import androidx.annotation.NonNull;\n\n");
+
+            builder.append("import com.zhihu.android.sugaradapter.InjectDelegate;\n");
+            builder.append("import com.zhihu.android.sugaradapter.SugarHolder;\n\n");
+
+            builder.append("public final class ").append(className).append(" implements InjectDelegate {\n");
+            builder.append("    @Override\n");
+            builder.append("    @SuppressLint(\"ResourceType\")\n");
+            builder.append("    public <SH extends SugarHolder> void injectView(@NonNull SH sh, @NonNull View view) {\n");
+            builder.append("        if (sh instanceof ").append(holderClass).append(") {\n");
+            builder.append("            ").append(holderClass).append(" th = (").append(holderClass).append(") sh;\n");
+
+            for (InjectInfo info : map.get(holderClass)) {
+                builder.append("            th.").append(info.getViewName())
+                        .append(" = (").append(info.getViewType()).append(")")
+                        .append(" view.findViewById(").append(info.getViewIdStr()).append(");\n");
+            }
+
+            builder.append("        }\n");
+            builder.append("    }\n");
+            builder.append("}\n");
+
+            try {
+                JavaFileObject object = processingEnv.getFiler().createSourceFile(className);
+                Writer writer = object.openWriter();
+                writer.write(builder.toString());
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
         }
     }
 

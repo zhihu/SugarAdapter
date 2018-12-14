@@ -16,6 +16,7 @@
 
 package com.zhihu.android.sugaradapter;
 
+import androidx.annotation.CheckResult;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.hendraanggrian.RParser;
@@ -54,14 +55,16 @@ public class SugarProcessor extends AbstractProcessor {
 
     // <editor-fold desc="@Layout">
 
-    private void processLayout(@NonNull RoundEnvironment roundEnv) {
+    @CheckResult
+    private Map<String, Set<String>> processLayout(@NonNull RoundEnvironment roundEnv) {
         RParser parser = RParser.builder(processingEnv)
                 .setSupportedAnnotations(Collections.singleton(Layout.class))
                 .setSupportedTypes("layout")
                 .build();
         parser.scan(roundEnv);
 
-        Map<String, Pair> map = new HashMap<>();
+        Map<String, Pair> injectInfoMap = new HashMap<>();
+        Map<String, Set<String>> superclassMap = new HashMap<>();
         for (Element element : roundEnv.getElementsAnnotatedWith(Layout.class)) {
             if (element instanceof TypeElement) {
                 String holderClass = ((TypeElement) element).getQualifiedName().toString();
@@ -103,21 +106,37 @@ public class SugarProcessor extends AbstractProcessor {
                     throw new IllegalStateException("process " + holderClass + " failed!");
                 }
 
-                map.put(holderClass, new Pair(layoutResStr, dataClass));
+                injectInfoMap.put(holderClass, new Pair(layoutResStr, dataClass));
+
+                // find all available superclass for next step process @Id
+                mirror = ((TypeElement) element).getSuperclass();
+                while (mirror != null && !(mirror instanceof NoType)) {
+                    TypeElement temp = ((TypeElement) processingEnv.getTypeUtils().asElement(mirror));
+                    Set<String> set = superclassMap.get(holderClass);
+                    if (set == null) {
+                        set = new HashSet<>();
+                        set.add(temp.getQualifiedName().toString());
+                        superclassMap.put(holderClass, set);
+                    } else  {
+                        set.add(temp.getQualifiedName().toString());
+                    }
+
+                    mirror = temp.getSuperclass();
+                }
             }
         }
 
         String moduleName = processingEnv.getOptions().get(OPTION_MODULE_NAME);
         String subModules = processingEnv.getOptions().get(OPTION_SUB_MODULES);
-        if (moduleName != null && moduleName.length() > 0 && !map.isEmpty()) {
+        if (moduleName != null && moduleName.length() > 0 && !injectInfoMap.isEmpty()) {
             try {
-                generateContainerDelegateImpl(map);
+                generateContainerDelegateImpl(injectInfoMap);
             } catch (@NonNull Exception e) {
                 throw new IllegalStateException(e);
             }
-        } else if (subModules != null && subModules.length() > 0 || !map.isEmpty()) {
+        } else if (subModules != null && subModules.length() > 0 || !injectInfoMap.isEmpty()) {
             try {
-                generateContainerDelegateImpl(map);
+                generateContainerDelegateImpl(injectInfoMap);
             } catch (@NonNull Exception e) {
                 // noinspection StatementWithEmptyBody
                 if (e instanceof FilerException) {
@@ -127,6 +146,8 @@ public class SugarProcessor extends AbstractProcessor {
                 }
             }
         }
+
+        return superclassMap;
     }
 
     private void generateContainerDelegateImpl(@NonNull Map<String, Pair> map) throws IOException {

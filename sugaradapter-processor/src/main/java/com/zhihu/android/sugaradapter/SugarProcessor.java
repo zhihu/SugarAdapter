@@ -328,8 +328,8 @@ public class SugarProcessor extends AbstractProcessor {
             builder.append("package ").append(holderClass, 0, lastIndex).append(";\n\n");
 
             builder.append("import android.annotation.SuppressLint;\n");
-            builder.append("import android.view.View;\n");
-            builder.append("import androidx.annotation.NonNull;\n\n");
+            builder.append("import android.support.annotation.NonNull;\n");
+            builder.append("import android.view.View;\n\n");
 
             builder.append("import com.zhihu.android.sugaradapter.InjectDelegate;\n");
             builder.append("import com.zhihu.android.sugaradapter.SugarHolder;\n\n");

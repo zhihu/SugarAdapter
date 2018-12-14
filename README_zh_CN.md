@@ -55,12 +55,13 @@ mRecyclerView.setAdapter(mAdapter);
 Layout - ViewType - Data ，三位一体，所以我们要必须这样使用 SugarHolder ：
 
 ```java
-// 务必注解的保证子类是 public 和 final 的；R.layout.foo 同时也是 ViewType
+// 缺省认为 FooHolder 是不可继承的；
+// 如果你需要用到继承，请参考 demo 中的做法
 @Layout(R.layout.foo) 
 public final class FooHolder extends SugarHolder<Foo> {
     // 如果你不想手写 findViewById() 代码，
-    // 只需要给定义的 View 加上 @Id() 注解，并且保证它为 public 的即可；
-    // @Id() 同样只能作用于 **final** class
+    // 只需要给定义的 View 加上 @Id() 注解，
+    // 并且保证它为 public 的即可
     @Id(R.id.text)
     public TextView mTextView;
 
@@ -99,9 +100,9 @@ SugarHolder 同时还有一些你可能想要使用或复写的方法：
 
 ```groovy
 dependencies {
-    // 如果你想要迁移到 AndroidX ，可以使用 1.8.4
-    implementation 'com.zhihu.android:sugaradapter:1.7.8'
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
+    // 如果你想要迁移到 AndroidX ，可以使用 1.8.5
+    implementation 'com.zhihu.android:sugaradapter:1.7.9'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.9'
 }
 ```
 
@@ -123,9 +124,9 @@ android {
 }
 
 dependencies {
-    // 如果你想要迁移到 AndroidX ，可以使用 1.8.4
-    implementation 'com.zhihu.android:sugaradapter:1.7.8' 
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
+    // 如果你想要迁移到 AndroidX ，可以使用 1.8.5
+    implementation 'com.zhihu.android:sugaradapter:1.7.9' 
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.9'
 }
 ```
 
@@ -143,9 +144,9 @@ android {
 }
 
 dependencies {
-    // 如果你想要迁移到 AndroidX ，可以使用 1.8.4
-    implementation 'com.zhihu.android:sugaradapter:1.7.8' 
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
+    // 如果你想要迁移到 AndroidX ，可以使用 1.8.5
+    implementation 'com.zhihu.android:sugaradapter:1.7.9' 
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.9'
 }
 ```
 

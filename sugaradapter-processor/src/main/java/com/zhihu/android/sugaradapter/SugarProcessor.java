@@ -16,28 +16,12 @@
 
 package com.zhihu.android.sugaradapter;
 
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.hendraanggrian.RParser;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.FilerException;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedOptions;
-import javax.annotation.processing.SupportedSourceVersion;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -45,6 +29,11 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.NoType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.JavaFileObject;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SupportedAnnotationTypes({SugarProcessor.ANNOTATION_TYPE_LAYOUT, SugarProcessor.ANNOTATION_TYPE_ID})
 @SupportedOptions({SugarProcessor.OPTION_MODULE_NAME, SugarProcessor.OPTION_SUB_MODULES})
@@ -66,14 +55,16 @@ public class SugarProcessor extends AbstractProcessor {
 
     // <editor-fold desc="@Layout">
 
-    private void processLayout(@NonNull RoundEnvironment roundEnv) {
+    @CheckResult
+    private Map<String, Set<String>> processLayout(@NonNull RoundEnvironment roundEnv) {
         RParser parser = RParser.builder(processingEnv)
                 .setSupportedAnnotations(Collections.singleton(Layout.class))
                 .setSupportedTypes("layout")
                 .build();
         parser.scan(roundEnv);
 
-        Map<String, Pair> map = new HashMap<>();
+        Map<String, Pair> injectInfoMap = new HashMap<>();
+        Map<String, Set<String>> superclassMap = new HashMap<>();
         for (Element element : roundEnv.getElementsAnnotatedWith(Layout.class)) {
             if (element instanceof TypeElement) {
                 String holderClass = ((TypeElement) element).getQualifiedName().toString();
@@ -115,21 +106,37 @@ public class SugarProcessor extends AbstractProcessor {
                     throw new IllegalStateException("process " + holderClass + " failed!");
                 }
 
-                map.put(holderClass, new Pair(layoutResStr, dataClass));
+                injectInfoMap.put(holderClass, new Pair(layoutResStr, dataClass));
+
+                // find all available superclass for next step process @Id
+                mirror = ((TypeElement) element).getSuperclass();
+                while (mirror != null && !(mirror instanceof NoType)) {
+                    TypeElement temp = ((TypeElement) processingEnv.getTypeUtils().asElement(mirror));
+                    Set<String> set = superclassMap.get(holderClass);
+                    if (set == null) {
+                        set = new HashSet<>();
+                        set.add(temp.getQualifiedName().toString());
+                        superclassMap.put(holderClass, set);
+                    } else  {
+                        set.add(temp.getQualifiedName().toString());
+                    }
+
+                    mirror = temp.getSuperclass();
+                }
             }
         }
 
         String moduleName = processingEnv.getOptions().get(OPTION_MODULE_NAME);
         String subModules = processingEnv.getOptions().get(OPTION_SUB_MODULES);
-        if (moduleName != null && moduleName.length() > 0 && !map.isEmpty()) {
+        if (moduleName != null && moduleName.length() > 0 && !injectInfoMap.isEmpty()) {
             try {
-                generateContainerDelegateImpl(map);
+                generateContainerDelegateImpl(injectInfoMap);
             } catch (@NonNull Exception e) {
                 throw new IllegalStateException(e);
             }
-        } else if (subModules != null && subModules.length() > 0 || !map.isEmpty()) {
+        } else if (subModules != null && subModules.length() > 0 || !injectInfoMap.isEmpty()) {
             try {
-                generateContainerDelegateImpl(map);
+                generateContainerDelegateImpl(injectInfoMap);
             } catch (@NonNull Exception e) {
                 // noinspection StatementWithEmptyBody
                 if (e instanceof FilerException) {
@@ -139,6 +146,8 @@ public class SugarProcessor extends AbstractProcessor {
                 }
             }
         }
+
+        return superclassMap;
     }
 
     private void generateContainerDelegateImpl(@NonNull Map<String, Pair> map) throws IOException {

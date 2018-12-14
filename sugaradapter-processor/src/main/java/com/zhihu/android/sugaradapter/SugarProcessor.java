@@ -44,23 +44,6 @@ public class SugarProcessor extends AbstractProcessor {
     static final String OPTION_SUB_MODULES = "subModulesOfSugarAdapter";
 
     private static final Pattern TYPE_PARAM_PATTERN = Pattern.compile("(.*?)<(.*?)>");
-    private RParser mLayoutParser;
-    private RParser mIdParser;
-
-    @Override
-    public synchronized void init(@NonNull ProcessingEnvironment processingEnvironment) {
-        super.init(processingEnvironment);
-
-        mLayoutParser = RParser.builder(processingEnvironment)
-                .setSupportedAnnotations(Collections.singleton(Layout.class))
-                .setSupportedTypes("layout")
-                .build();
-
-        mIdParser = RParser.builder(processingEnvironment)
-                .setSupportedAnnotations(Collections.singleton(Id.class))
-                .setSupportedTypes("id")
-                .build();
-    }
 
     @Override
     public boolean process(@NonNull Set<? extends TypeElement> annotations, @NonNull RoundEnvironment roundEnv) {
@@ -72,9 +55,13 @@ public class SugarProcessor extends AbstractProcessor {
     // <editor-fold desc="@Layout">
 
     private void processLayout(@NonNull RoundEnvironment roundEnv) {
-        Map<String, Pair> map = new HashMap<>();
-        mLayoutParser.scan(roundEnv);
+        RParser parser = RParser.builder(processingEnv)
+                .setSupportedAnnotations(Collections.singleton(Layout.class))
+                .setSupportedTypes("layout")
+                .build();
+        parser.scan(roundEnv);
 
+        Map<String, Pair> map = new HashMap<>();
         for (Element element : roundEnv.getElementsAnnotatedWith(Layout.class)) {
             if (element instanceof TypeElement) {
                 String holderClass = ((TypeElement) element).getQualifiedName().toString();
@@ -106,7 +93,7 @@ public class SugarProcessor extends AbstractProcessor {
                         packageName = packageName + "." + path;
                     }
 
-                    layoutResStr = mLayoutParser.parse(packageName, layoutRes);
+                    layoutResStr = parser.parse(packageName, layoutRes);
                     if (!layoutResStr.equals(String.valueOf(layoutRes))) {
                         break;
                     }
@@ -237,9 +224,13 @@ public class SugarProcessor extends AbstractProcessor {
     // <editor-fold desc="@Id">
 
     private void processId(@NonNull RoundEnvironment roundEnv) {
-        Map<String, Set<InjectInfo>> map = new HashMap<>();
-        mIdParser.scan(roundEnv);
+        RParser parser = RParser.builder(processingEnv)
+                .setSupportedAnnotations(Collections.singleton(Id.class))
+                .setSupportedTypes("id")
+                .build();
+        parser.scan(roundEnv);
 
+        Map<String, Set<InjectInfo>> map = new HashMap<>();
         for (Element element : roundEnv.getElementsAnnotatedWith(Id.class)) {
             if (element instanceof VariableElement) {
                 String holderClass = ((TypeElement) element.getEnclosingElement()).getQualifiedName().toString();
@@ -262,7 +253,7 @@ public class SugarProcessor extends AbstractProcessor {
                         packageName = packageName + "." + path;
                     }
 
-                    viewIdStr = mIdParser.parse(packageName, viewId);
+                    viewIdStr = parser.parse(packageName, viewId);
                     if (!viewIdStr.equals(String.valueOf(viewId))) {
                         break;
                     }

@@ -26,7 +26,7 @@ import com.zhihu.android.sugaradapterdemo.R;
 import com.zhihu.android.sugaradapterdemo.item.Foo;
 
 @Layout(R.layout.layout_foo)
-public final class FooHolder extends BaseHolder<Foo> {
+public class FooHolder extends BaseHolder<Foo> {
     @SuppressWarnings("WeakerAccess")
     @Id(R.id.text)
     public AppCompatTextView mTextView;

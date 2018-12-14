@@ -17,26 +17,16 @@
 package com.zhihu.android.sugaradapterdemo.holder;
 
 import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
-
-import com.zhihu.android.sugaradapter.Id;
-import com.zhihu.android.sugaradapter.Layout;
-import com.zhihu.android.sugaradapterdemo.R;
 import com.zhihu.android.sugaradapterdemo.item.Foo;
 
-@Layout(R.layout.layout_foo)
-public class FooHolder2 extends BaseHolder<Foo> {
-    @SuppressWarnings("WeakerAccess")
-    @Id(R.id.text)
-    public AppCompatTextView mTextView;
-
+public class FooHolder2 extends FooHolder {
     public FooHolder2(@NonNull View view) {
         super(view);
     }
 
     @Override
-    protected void onBindData(@NonNull Foo foo) {
+    public void onBindData(@NonNull Foo foo) {
         String text = foo.getText() + " - FooHolder2";
         mTextView.setText(text);
     }

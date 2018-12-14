@@ -57,12 +57,12 @@ That's all!
 Layout - ViewType - Data, trinity, so we must extends SugarHolder as below:
 
 ```java
-// Annotated subclass must be public and final; R.layout.foo also as ViewType
+// FooHolder is public and final by default;
+// if you want to extends FooHolder, see demo
 @Layout(R.layout.foo) 
 public final class FooHolder extends SugarHolder<Foo> {
     // If you don't want to write findViewById(), 
-    // just annotate view with @Id(), and make it **public**;
-    // @Id() can only work with **final** class too
+    // just annotate view with @Id(), and make it **public**
     @Id(R.id.text)
     public TextView mTextView;
 
@@ -101,9 +101,9 @@ Now you can use ViewHolder easily.
 
 ```groovy
 dependencies {
-    // migrate to AndroidX, use 1.8.4
-    implementation 'com.zhihu.android:sugaradapter:1.7.8'
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
+    // migrate to AndroidX, use 1.8.5
+    implementation 'com.zhihu.android:sugaradapter:1.7.9'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.9'
 }
 ```
 
@@ -125,9 +125,9 @@ android {
 }
 
 dependencies {
-    // migrate to AndroidX, use 1.8.4
-    implementation 'com.zhihu.android:sugaradapter:1.7.8' 
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
+    // migrate to AndroidX, use 1.8.5
+    implementation 'com.zhihu.android:sugaradapter:1.7.9' 
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.9'
 }
 ```
 
@@ -145,9 +145,9 @@ android {
 }
 
 dependencies {
-    // migrate to AndroidX, use 1.8.4
-    implementation 'com.zhihu.android:sugaradapter:1.7.8' 
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.8'
+    // migrate to AndroidX, use 1.8.5
+    implementation 'com.zhihu.android:sugaradapter:1.7.9' 
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.9'
 }
 ```
 

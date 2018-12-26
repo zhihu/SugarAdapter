@@ -28,10 +28,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
@@ -315,10 +312,27 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
 
     @SuppressWarnings("unchecked")
     @Override
+    public void onBindViewHolder(@NonNull SugarHolder holder, int position, @NonNull List<Object> payloads) {
+        onBindViewHolderInternal(holder, position, payloads);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public void onBindViewHolder(@NonNull SugarHolder holder, int position) {
+        onBindViewHolderInternal(holder, position, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void onBindViewHolderInternal(@NonNull SugarHolder holder, int position, @Nullable List<Object> payloads) {
         Object data = mList.get(position);
         holder.setData(data); // double check
-        holder.onBindData(data);
+
+        if (payloads == null || payloads.isEmpty()) {
+            holder.onBindData(data, Collections.emptyList());
+        } else {
+            holder.onBindData(data, payloads);
+        }
+
         holder.getLifecycleRegistry().handleLifecycleEvent(Lifecycle.Event.ON_START);
 
         for (SugarHolderListener listener : mSugarHolderListenerList) {

@@ -26,6 +26,8 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
 @SuppressWarnings({"unused", "WeakerAccess"})
 public abstract class SugarHolder<T> extends RecyclerView.ViewHolder implements LifecycleOwner {
     public interface OnCreatedCallback<SH extends SugarHolder> {
@@ -156,6 +158,11 @@ public abstract class SugarHolder<T> extends RecyclerView.ViewHolder implements 
     @Px
     protected final int sp2px(@FloatRange(from = 0.0F) float sp) {
         return (int) (getContext().getResources().getDisplayMetrics().scaledDensity * sp + 0.5F);
+    }
+
+    @CallSuper
+    protected void onBindData(@NonNull T data, @NonNull List<Object> payloads) {
+        onBindData(data);
     }
 
     protected void onViewAttachedToWindow() {

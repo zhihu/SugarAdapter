@@ -100,9 +100,9 @@ SugarHolder 同时还有一些你可能想要使用或复写的方法：
 
 ```groovy
 dependencies {
-    // 如果你想要迁移到 AndroidX ，可以使用 1.8.5
-    implementation 'com.zhihu.android:sugaradapter:1.7.9'
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.9'
+    // 如果你想要迁移到 AndroidX ，可以使用 1.8.6
+    implementation 'com.zhihu.android:sugaradapter:1.7.10'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.10'
 }
 ```
 
@@ -124,9 +124,9 @@ android {
 }
 
 dependencies {
-    // 如果你想要迁移到 AndroidX ，可以使用 1.8.5
-    implementation 'com.zhihu.android:sugaradapter:1.7.9' 
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.9'
+    // 如果你想要迁移到 AndroidX ，可以使用 1.8.6
+    implementation 'com.zhihu.android:sugaradapter:1.7.10' 
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.10'
 }
 ```
 
@@ -144,9 +144,9 @@ android {
 }
 
 dependencies {
-    // 如果你想要迁移到 AndroidX ，可以使用 1.8.5
-    implementation 'com.zhihu.android:sugaradapter:1.7.9' 
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.9'
+    // 如果你想要迁移到 AndroidX ，可以使用 1.8.6
+    implementation 'com.zhihu.android:sugaradapter:1.7.10' 
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.10'
 }
 ```
 

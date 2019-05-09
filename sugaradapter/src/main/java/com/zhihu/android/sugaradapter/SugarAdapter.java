@@ -160,6 +160,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         mContainerArray = containerArray;
         mDispatcherMap = new HashMap<>();
         mExtraDelegateList = new ArrayList<>();
+        mPreInflateListenerList = new ArrayList<>();
         mSugarHolderListenerList = new ArrayList<>();
 
         if (preInflate) {

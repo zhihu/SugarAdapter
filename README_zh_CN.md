@@ -41,6 +41,7 @@ mAdapter = SugarAdapter.Builder.with(mList) // eg. List<Object>
                 // holder.SETTER etc.
             }
         })
+        .preInflate(true) // 预先解析 ViewHolder 的 XML 提升列表滚动性能
         .build();
 mRecyclerView.setAdapter(mAdapter);
 
@@ -100,9 +101,9 @@ SugarHolder 同时还有一些你可能想要使用或复写的方法：
 
 ```groovy
 dependencies {
-    // 如果你想要迁移到 AndroidX ，可以使用 1.8.6
-    implementation 'com.zhihu.android:sugaradapter:1.7.10'
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.10'
+    // 如果你想要迁移到 AndroidX ，可以使用 1.8.7
+    implementation 'com.zhihu.android:sugaradapter:1.7.11'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.11'
 }
 ```
 
@@ -124,9 +125,9 @@ android {
 }
 
 dependencies {
-    // 如果你想要迁移到 AndroidX ，可以使用 1.8.6
-    implementation 'com.zhihu.android:sugaradapter:1.7.10' 
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.10'
+    // 如果你想要迁移到 AndroidX ，可以使用 1.8.7
+    implementation 'com.zhihu.android:sugaradapter:1.7.11'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.11'
 }
 ```
 
@@ -144,9 +145,9 @@ android {
 }
 
 dependencies {
-    // 如果你想要迁移到 AndroidX ，可以使用 1.8.6
-    implementation 'com.zhihu.android:sugaradapter:1.7.10' 
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.10'
+    // 如果你想要迁移到 AndroidX ，可以使用 1.8.7
+    implementation 'com.zhihu.android:sugaradapter:1.7.11'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.11'
 }
 ```
 

@@ -43,6 +43,7 @@ mAdapter = SugarAdapter.Builder.with(mList) // eg. List<Object>
                 // holder.SETTER etc.
             }
         })
+        .preInflate(true) // preInflate ViewHolders' XML for smooth scrolling
         .build();
 mRecyclerView.setAdapter(mAdapter);
 
@@ -101,9 +102,9 @@ Now you can use ViewHolder easily.
 
 ```groovy
 dependencies {
-    // migrate to AndroidX, use 1.8.6
-    implementation 'com.zhihu.android:sugaradapter:1.7.10'
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.10'
+    // migrate to AndroidX, use 1.8.7
+    implementation 'com.zhihu.android:sugaradapter:1.7.11'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.11'
 }
 ```
 
@@ -125,9 +126,9 @@ android {
 }
 
 dependencies {
-    // migrate to AndroidX, use 1.8.6
-    implementation 'com.zhihu.android:sugaradapter:1.7.10' 
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.10'
+    // migrate to AndroidX, use 1.8.7
+    implementation 'com.zhihu.android:sugaradapter:1.7.11'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.11'
 }
 ```
 
@@ -145,9 +146,9 @@ android {
 }
 
 dependencies {
-    // migrate to AndroidX, use 1.8.6
-    implementation 'com.zhihu.android:sugaradapter:1.7.10' 
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.10'
+    // migrate to AndroidX, use 1.8.7
+    implementation 'com.zhihu.android:sugaradapter:1.7.11'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.11'
 }
 ```
 

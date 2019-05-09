@@ -45,6 +45,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api project(':sugaradapter-annotation')
+    // noinspection GradleDependency
     api "com.android.support:recyclerview-v7:${ext.support}"
 }
 

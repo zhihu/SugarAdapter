@@ -94,6 +94,11 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         void onDetachedFromRecyclerView(@NonNull RecyclerView view);
     }
 
+    public interface PreInflateListener {
+        void onExecutePreInflate(@LayoutRes int layoutRes);
+        void onApplyPreInflate(@LayoutRes int layoutRes, boolean fallback);
+    }
+
     public static abstract class Dispatcher<T> {
         // return null to use default rule
         @Nullable
@@ -144,6 +149,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
     private SparseArray<Container> mContainerArray;
     private Map<Class<?>, Dispatcher<?>> mDispatcherMap;
     private List<ExtraDelegate> mExtraDelegateList;
+    private List<PreInflateListener> mPreInflateListenerList;
     private List<SugarHolderListener<?>> mSugarHolderListenerList;
 
     private MessageQueue.IdleHandler mPreInflateHandler;
@@ -226,6 +232,31 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
 
     // </editor-fold>
 
+    // <editor-fold desc="PreInflateListener">
+
+    @NonNull
+    public SugarAdapter addPreInflateListener(@NonNull PreInflateListener listener) {
+        if (!mPreInflateListenerList.contains(listener)) {
+            mPreInflateListenerList.add(listener);
+        }
+
+        return this;
+    }
+
+    @NonNull
+    public SugarAdapter removePreInflateListener(@NonNull PreInflateListener listener) {
+        mPreInflateListenerList.remove(listener);
+        return this;
+    }
+
+    @NonNull
+    public SugarAdapter clearPreInflateListener() {
+        mPreInflateListenerList.clear();
+        return this;
+    }
+
+    // </editor-fold>
+
     // <editor-fold desc="SugarHolderListener">
 
     @SuppressWarnings("UnusedReturnValue")
@@ -238,14 +269,12 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         return this;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public SugarAdapter removeSugarHolderListener(@NonNull SugarHolderListener<?> listener) {
         mSugarHolderListenerList.remove(listener);
         return this;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public SugarAdapter clearSugarHolderListener() {
         mSugarHolderListenerList.clear();
@@ -311,6 +340,12 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
             if (mPreInflateArray != null) {
                 view = mPreInflateArray.get(layoutRes);
                 mPreInflateArray.delete(layoutRes); // no longer need to preInflate
+
+                for (PreInflateListener listener : mPreInflateListenerList) {
+                    if (listener != null) {
+                        listener.onApplyPreInflate(layoutRes, view == null);
+                    }
+                }
             }
 
             if (view == null) {
@@ -407,6 +442,13 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
                     int layoutRes = mPreInflateArray.keyAt(i);
                     if (mPreInflateArray.get(layoutRes) == null) {
                         mPreInflateArray.put(layoutRes, inflateView(layoutRes, view));
+
+                        for (PreInflateListener listener : mPreInflateListenerList) {
+                            if (listener != null) {
+                                listener.onExecutePreInflate(layoutRes);
+                            }
+                        }
+
                         // only one at a time, avoid blocking MainThread
                         break;
                     }

@@ -308,12 +308,14 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         Container container = mContainerArray.get(viewType);
 
         try {
-            View view;
+            View view = null;
             int layoutRes = container.getLayoutRes();
             if (mPreInflateArray != null) {
-                view = mPreInflateArray.get(layoutRes, inflateView(layoutRes, parent));
+                view = mPreInflateArray.get(layoutRes);
                 mPreInflateArray.delete(layoutRes); // no longer need to preInflate
-            } else {
+            }
+
+            if (view == null) {
                 view = inflateView(layoutRes, parent);
             }
 
@@ -412,7 +414,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
                     }
                 }
 
-                return mPreInflateArray.size() <= 0;
+                return mPreInflateArray.size() > 0;
             };
 
             Looper.myQueue().addIdleHandler(mPreInflateHandler);

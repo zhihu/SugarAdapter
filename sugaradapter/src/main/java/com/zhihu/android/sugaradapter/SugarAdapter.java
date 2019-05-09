@@ -16,12 +16,15 @@
 
 package com.zhihu.android.sugaradapter;
 
+import android.os.Looper;
+import android.os.MessageQueue;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.IntRange;
+import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
@@ -36,7 +39,8 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
 
     public static final class Builder {
         private List<?> mList;
-        private SparseArray<Container> mArray;
+        private SparseArray<Container> mContainerArray;
+        private boolean mPreInflate;
 
         @NonNull
         public static Builder with(@NonNull List<?> list) {
@@ -45,7 +49,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
 
         private Builder(@NonNull List<?> list) {
             mList = list;
-            mArray = new SparseArray<>();
+            mContainerArray = new SparseArray<>();
         }
 
         @NonNull
@@ -65,17 +69,23 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
                         + " must have an annotation @Layout(R.layout.*)");
             }
 
-            mArray.put(holderClass.hashCode(), new Container(holderClass, dataClass, layoutRes, callback));
+            mContainerArray.put(holderClass.hashCode(), new Container(holderClass, dataClass, layoutRes, callback));
+            return this;
+        }
+
+        @NonNull
+        public <SH extends SugarHolder> Builder preInflate(boolean enable) {
+            mPreInflate = enable;
             return this;
         }
 
         @NonNull
         public SugarAdapter build() {
-            if (mArray.size() <= 0) {
+            if (mContainerArray.size() <= 0) {
                 throw new IllegalStateException("must add at least one Class<? extends SugarHolder>");
             }
 
-            return new SugarAdapter(mList, mArray);
+            return new SugarAdapter(mList, mContainerArray, mPreInflate);
         }
     }
 
@@ -133,17 +143,29 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
     }
 
     private List<?> mList;
-    private SparseArray<Container> mArray;
+    private SparseArray<Container> mContainerArray;
     private Map<Class<?>, Dispatcher<?>> mDispatcherMap;
     private List<ExtraDelegate> mExtraDelegateList;
     private List<SugarHolderListener<?>> mSugarHolderListenerList;
 
-    private SugarAdapter(@NonNull List<?> list, @NonNull SparseArray<Container> array) {
+    private MessageQueue.IdleHandler mPreInflateHandler;
+    private SparseArray<View> mPreInflateArray;
+
+    private SugarAdapter(@NonNull List<?> list, @NonNull SparseArray<Container> containerArray, boolean preInflate) {
         mList = list;
-        mArray = array;
+        mContainerArray = containerArray;
         mDispatcherMap = new HashMap<>();
         mExtraDelegateList = new ArrayList<>();
         mSugarHolderListenerList = new ArrayList<>();
+
+        if (preInflate) {
+            mPreInflateArray = new SparseArray<>();
+            for (int i = 0; i < mContainerArray.size(); i++) {
+                int key = mContainerArray.keyAt(i);
+                Container container = mContainerArray.get(key);
+                mPreInflateArray.put(container.getLayoutRes(), null);
+            }
+        }
     }
 
     // <editor-fold desc="Dispatcher">
@@ -155,7 +177,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         if (mDispatcherMap.containsKey(key)) {
             Log.d(TAG, "addDispatcher repeated"
                     + ", SugarAdapter already has a dispatcher of " + key.getCanonicalName()
-                    + ", new dispatcher will cover the old one");
+                    + ", new dispatcher will cover the old one.");
         }
 
         mDispatcherMap.put(key, dispatcher);
@@ -257,18 +279,18 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
 
         if (holderClass != null) {
             int key = holderClass.hashCode();
-            if (mArray.indexOfKey(key) < 0) {
+            if (mContainerArray.indexOfKey(key) < 0) {
                 throw new RuntimeException("getItemViewType failed, holder: " + holderClass.getCanonicalName()
-                        + ", please make sure you have added it when build SugarAdapter");
+                        + ", please make sure you have added it when build SugarAdapter.");
             }
 
-            mArray.get(key).setData(data);
+            mContainerArray.get(key).setData(data);
             return key;
         }
 
-        for (int i = 0; i < mArray.size(); i++) {
-            int key = mArray.keyAt(i);
-            Container container = mArray.get(key);
+        for (int i = 0; i < mContainerArray.size(); i++) {
+            int key = mContainerArray.keyAt(i);
+            Container container = mContainerArray.get(key);
             if (container.getDataClass() == data.getClass()) {
                 container.setData(data);
                 return key;
@@ -283,10 +305,18 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
     @Override
     @NonNull
     public SugarHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Container container = mArray.get(viewType);
+        Container container = mContainerArray.get(viewType);
 
         try {
-            View view = LayoutInflater.from(parent.getContext()).inflate(container.getLayoutRes(), parent, false);
+            View view;
+            int layoutRes = container.getLayoutRes();
+            if (mPreInflateArray != null) {
+                view = mPreInflateArray.get(layoutRes, inflateView(layoutRes, parent));
+                mPreInflateArray.delete(layoutRes); // no longer need to preInflate
+            } else {
+                view = inflateView(layoutRes, parent);
+            }
+
             SugarHolder holder = container.getHolderClass().getDeclaredConstructor(View.class).newInstance(view);
             holder.setAdapter(this);
             holder.setData(container.getData()); // makes SugarHolder#getData non-null
@@ -310,13 +340,16 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @NonNull
+    private View inflateView(@LayoutRes int layoutRes, @NonNull ViewGroup parent) {
+        return LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false);
+    }
+
     @Override
     public void onBindViewHolder(@NonNull SugarHolder holder, int position, @NonNull List<Object> payloads) {
         onBindViewHolderInternal(holder, position, payloads);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(@NonNull SugarHolder holder, int position) {
         onBindViewHolderInternal(holder, position, null);
@@ -367,9 +400,40 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView view) {
+        // preInflate XML when MainThread idle
+        if (mPreInflateArray != null && mPreInflateHandler == null) {
+            mPreInflateHandler = () -> {
+                for (int i = 0; i < mPreInflateArray.size(); i++) {
+                    int layoutRes = mPreInflateArray.keyAt(i);
+                    if (mPreInflateArray.get(layoutRes) == null) {
+                        mPreInflateArray.put(layoutRes, inflateView(layoutRes, view));
+                        // only one at a time, avoid blocking MainThread
+                        break;
+                    }
+                }
+
+                return mPreInflateArray.size() <= 0;
+            };
+
+            Looper.myQueue().addIdleHandler(mPreInflateHandler);
+        }
+
         for (ExtraDelegate delegate : mExtraDelegateList) {
             if (delegate != null) {
                 delegate.onAttachedToRecyclerView(view);
+            }
+        }
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView view) {
+        if (mPreInflateHandler != null) {
+            Looper.myQueue().removeIdleHandler(mPreInflateHandler);
+        }
+
+        for (ExtraDelegate delegate : mExtraDelegateList) {
+            if (delegate != null) {
+                delegate.onDetachedFromRecyclerView(view);
             }
         }
     }
@@ -379,15 +443,6 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         for (SugarHolderListener listener : mSugarHolderListenerList) {
             if (listener.isInstance(holder)) {
                 listener.onSugarHolderViewAttachedToWindow(holder);
-            }
-        }
-    }
-
-    @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView view) {
-        for (ExtraDelegate delegate : mExtraDelegateList) {
-            if (delegate != null) {
-                delegate.onDetachedFromRecyclerView(view);
             }
         }
     }

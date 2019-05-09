@@ -95,8 +95,8 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
     }
 
     public interface PreInflateListener {
-        void onExecutePreInflate(@LayoutRes int layoutRes);
-        void onApplyPreInflate(@LayoutRes int layoutRes, boolean fallback);
+        void onPreInflateExecuted(@LayoutRes int layoutRes);
+        void onPreInflateConsumed(@LayoutRes int layoutRes, boolean fallback);
     }
 
     public static abstract class Dispatcher<T> {
@@ -340,13 +340,16 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         try {
             View view = null;
             int layoutRes = container.getLayoutRes();
+
             if (mPreInflateArray != null) {
                 view = mPreInflateArray.get(layoutRes);
-                mPreInflateArray.delete(layoutRes); // no longer need to preInflate
+
+                // preInflate the layoutRes when next MainThread idle in case for needed
+                mPreInflateArray.put(layoutRes, null);
 
                 for (PreInflateListener listener : mPreInflateListenerList) {
                     if (listener != null) {
-                        listener.onApplyPreInflate(layoutRes, view == null);
+                        listener.onPreInflateConsumed(layoutRes, view == null);
                     }
                 }
             }
@@ -448,7 +451,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
 
                         for (PreInflateListener listener : mPreInflateListenerList) {
                             if (listener != null) {
-                                listener.onExecutePreInflate(layoutRes);
+                                listener.onPreInflateExecuted(layoutRes);
                             }
                         }
 
@@ -457,7 +460,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
                     }
                 }
 
-                return mPreInflateArray.size() > 0;
+                return true;
             };
 
             Looper.myQueue().addIdleHandler(mPreInflateHandler);
@@ -474,6 +477,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
     public void onDetachedFromRecyclerView(@NonNull RecyclerView view) {
         if (mPreInflateHandler != null) {
             Looper.myQueue().removeIdleHandler(mPreInflateHandler);
+            mPreInflateHandler = null;
         }
 
         for (ExtraDelegate delegate : mExtraDelegateList) {

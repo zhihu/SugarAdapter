@@ -105,6 +105,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         public abstract Class<? extends SugarHolder> dispatch(@NonNull T data);
 
         // https://stackoverflow.com/q/3437897
+        @Deprecated
         @NonNull
         private Class<T> ofType() {
             try {
@@ -175,28 +176,36 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
 
     // <editor-fold desc="Dispatcher">
 
-    @SuppressWarnings("UnusedReturnValue")
+    @Deprecated
     @NonNull
-    public SugarAdapter addDispatcher(@NonNull Dispatcher<?> dispatcher) {
-        Class<?> key = dispatcher.ofType();
-        if (mDispatcherMap.containsKey(key)) {
+    public <T> SugarAdapter addDispatcher(@NonNull Dispatcher<T> dispatcher) {
+        return addDispatcher(dispatcher.ofType(), dispatcher);
+    }
+
+    @NonNull
+    public <T> SugarAdapter addDispatcher(@NonNull Class<T> clazz, @NonNull Dispatcher<T> dispatcher) {
+        if (mDispatcherMap.containsKey(clazz)) {
             Log.d(TAG, "addDispatcher repeated"
-                    + ", SugarAdapter already has a dispatcher of " + key.getCanonicalName()
+                    + ", SugarAdapter already has a dispatcher of " + clazz.getCanonicalName()
                     + ", new dispatcher will cover the old one.");
         }
 
-        mDispatcherMap.put(key, dispatcher);
+        mDispatcherMap.put(clazz, dispatcher);
         return this;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
+    @Deprecated
     @NonNull
-    public SugarAdapter removeDispatcher(@NonNull Dispatcher<?> dispatcher) {
-        mDispatcherMap.remove(dispatcher.ofType());
+    public <T> SugarAdapter removeDispatcher(@NonNull Dispatcher<T> dispatcher) {
+        return removeDispatcher(dispatcher.ofType());
+    }
+
+    @NonNull
+    public <T> SugarAdapter removeDispatcher(@NonNull Class<T> clazz) {
+        mDispatcherMap.remove(clazz);
         return this;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public SugarAdapter clearDispatcher() {
         mDispatcherMap.clear();
@@ -207,7 +216,6 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
 
     // <editor-fold desc="ExtraDelegate">
 
-    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public SugarAdapter addExtraDelegate(@NonNull ExtraDelegate delegate) {
         if (!mExtraDelegateList.contains(delegate)) {
@@ -217,14 +225,12 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         return this;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public SugarAdapter removeExtraDelegate(@NonNull ExtraDelegate delegate) {
         mExtraDelegateList.remove(delegate);
         return this;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     @NonNull
     public SugarAdapter clearExtraDelegate() {
         mExtraDelegateList.clear();

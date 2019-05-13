@@ -95,7 +95,7 @@ public final class MainActivity extends AppCompatActivity {
                 .build();
         recyclerView.setAdapter(adapter);
 
-        adapter.addDispatcher(new SugarAdapter.Dispatcher<Foo>() {
+        adapter.addDispatcher(Foo.class, new SugarAdapter.Dispatcher<Foo>() {
             @SuppressWarnings("ConstantConditions")
             @Override
             @Nullable

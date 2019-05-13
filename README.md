@@ -102,9 +102,9 @@ Now you can use ViewHolder easily.
 
 ```groovy
 dependencies {
-    // migrate to AndroidX, use 1.8.7
-    implementation 'com.zhihu.android:sugaradapter:1.7.11'
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.11'
+    // migrate to AndroidX, use 1.8.8
+    implementation 'com.zhihu.android:sugaradapter:1.7.12'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.12'
 }
 ```
 
@@ -126,9 +126,9 @@ android {
 }
 
 dependencies {
-    // migrate to AndroidX, use 1.8.7
-    implementation 'com.zhihu.android:sugaradapter:1.7.11'
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.11'
+    // migrate to AndroidX, use 1.8.8
+    implementation 'com.zhihu.android:sugaradapter:1.7.12'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.12'
 }
 ```
 
@@ -146,9 +146,9 @@ android {
 }
 
 dependencies {
-    // migrate to AndroidX, use 1.8.7
-    implementation 'com.zhihu.android:sugaradapter:1.7.11'
-    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.11'
+    // migrate to AndroidX, use 1.8.8
+    implementation 'com.zhihu.android:sugaradapter:1.7.12'
+    annotationProcessor 'com.zhihu.android:sugaradapter-processor:1.7.12'
 }
 ```
 

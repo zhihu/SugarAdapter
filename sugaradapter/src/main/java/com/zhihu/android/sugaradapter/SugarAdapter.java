@@ -262,6 +262,15 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         return this;
     }
 
+    @NonNull
+    public SugarAdapter clearPreInflateViews() {
+        if (mPreInflateArray != null) {
+            mPreInflateArray.clear();
+        }
+
+        return this;
+    }
+
     // </editor-fold>
 
     // <editor-fold desc="SugarHolderListener">

@@ -186,15 +186,17 @@ public class SugarProcessor extends AbstractProcessor {
         // for main project
         String subModules = processingEnv.getOptions().get(OPTION_SUB_MODULES);
         if (subModules != null && subModules.length() > 0) {
-            builder.append("\n");
             for (String moduleName : subModules.split(",")) {
                 String moduleClassName = generateClassName(moduleName);
-                builder.append("        mLayoutResMap.putAll(new ")
-                        .append(moduleClassName).append("().getLayoutResMap());")
+                String moduleVariableName = moduleClassName.toLowerCase();
+                builder.append("\n");
+                builder.append("        ").append(moduleClassName).append(" ").append(moduleVariableName)
+                        .append(" = new ").append(moduleClassName).append("();")
                         .append(" // ").append(moduleName).append("\n");
-                builder.append("        mDataClassMap.putAll(new ")
-                        .append(moduleClassName).append("().getDataClassMap());")
-                        .append(" // ").append(moduleName).append("\n");
+                builder.append("        mLayoutResMap.putAll(")
+                        .append(moduleVariableName).append(".getLayoutResMap());\n");
+                builder.append("        mDataClassMap.putAll(")
+                        .append(moduleVariableName).append(".getDataClassMap());\n");
             }
         }
 

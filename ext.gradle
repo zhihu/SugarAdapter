@@ -20,6 +20,6 @@ ext {
     minSdkVersion = 14
     targetSdkVersion = 26
 
-    sugaradapter = '1.7.13'
+    sugaradapter = '1.7.14-RC1'
     support = '26.1.0'
 }

@@ -5,7 +5,6 @@ def ext = rootProject.ext
 
 android {
     compileSdkVersion ext.compileSdkVersion
-    buildToolsVersion ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion ext.minSdkVersion
@@ -35,7 +34,7 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
 
     // noinspection GradleDependency
-    api "androidx.appcompat:appcompat:${ext.androidx}"
+    api "com.android.support:appcompat-v7:${ext.support}"
 
     // SugarAdapter
     // api "com.zhihu.android:sugaradapter:${ext.sugaradapter}"

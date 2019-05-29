@@ -1,8 +1,8 @@
 package com.zhihu.android.sugaradapterlibrary.holder;
 
+import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatTextView;
 import com.zhihu.android.sugaradapter.Id;
 import com.zhihu.android.sugaradapter.Layout;
 import com.zhihu.android.sugaradapter.SugarHolder;

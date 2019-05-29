@@ -16,7 +16,7 @@
 
 package com.zhihu.android.sugaradapterlibrary.item;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 public final class LibraryItem {
     private String mText;

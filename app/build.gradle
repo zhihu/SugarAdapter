@@ -20,7 +20,6 @@ def ext = rootProject.ext
 
 android {
     compileSdkVersion ext.compileSdkVersion
-    buildToolsVersion ext.buildToolsVersion
 
     defaultConfig {
         applicationId 'com.zhihu.android.sugaradapterdemo'

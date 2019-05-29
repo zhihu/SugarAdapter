@@ -325,7 +325,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
         if (holderClass != null) {
             int key = holderClass.hashCode();
             if (mContainerArray.indexOfKey(key) < 0) {
-                throw new RuntimeException("getItemViewType failed, holder: " + holderClass.getCanonicalName()
+                throw new RuntimeException("getItemViewType() failed, holder: " + holderClass.getCanonicalName()
                         + ", please make sure you have added it when build SugarAdapter.");
             }
 
@@ -342,7 +342,7 @@ public final class SugarAdapter extends RecyclerView.Adapter<SugarHolder> {
             }
         }
 
-        throw new RuntimeException("getItemViewType failed, data: " + data.getClass().getCanonicalName()
+        throw new RuntimeException("getItemViewType() failed, data: " + data.getClass().getCanonicalName()
                 + ", please make sure you have associated it with a Class<? extends SugarHolder>");
     }
 

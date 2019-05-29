@@ -36,6 +36,8 @@ import com.zhihu.android.sugaradapterdemo.holder.FooHolder;
 import com.zhihu.android.sugaradapterdemo.holder.FooHolder2;
 import com.zhihu.android.sugaradapterdemo.item.Bar;
 import com.zhihu.android.sugaradapterdemo.item.Foo;
+import com.zhihu.android.sugaradapterlibrary.holder.LibraryHolder;
+import com.zhihu.android.sugaradapterlibrary.item.LibraryItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +66,7 @@ public final class MainActivity extends AppCompatActivity {
     private void simpleUsageExample(@NonNull RecyclerView recyclerView) {
         List<Object> list = new ArrayList<>();
         SugarAdapter adapter = SugarAdapter.Builder.with(list)
+                .add(LibraryHolder.class)
                 .add(FooHolder.class)
                 .add(BarHolder.class, holder -> holder.setBarHolderListener(new BarHolder.BarHolderListener() {
                     @Override
@@ -79,10 +82,13 @@ public final class MainActivity extends AppCompatActivity {
                 .build();
         recyclerView.setAdapter(adapter);
 
+        list.add(new LibraryItem("a LibraryHolder instance :P"));
+
         for (int i = 0; i < 100; i++) {
             String text = String.valueOf(i);
             list.add(i % 2 == 0 ? new Foo(text) : new Bar(text));
         }
+
         adapter.notifyDataSetChanged();
     }
 

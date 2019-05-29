@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  ~ Copyright 2018 Zhihu Inc.
+  ~ Copyright 2019 Zhihu Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@
              android:clickable="true"
              android:focusable="true">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp">
-    </android.support.v7.widget.AppCompatTextView>
+    </androidx.appcompat.widget.AppCompatTextView>
 
 </FrameLayout>

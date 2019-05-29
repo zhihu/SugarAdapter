@@ -28,6 +28,12 @@ android {
         targetSdkVersion ext.targetSdkVersion
         versionCode 1
         versionName '1.0.0'
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [subModulesOfSugarAdapter: 'library']
+            }
+        }
     }
 
     buildTypes {
@@ -45,6 +51,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':library')
 
     // noinspection GradleDependency
     implementation "com.android.support:appcompat-v7:${ext.support}"

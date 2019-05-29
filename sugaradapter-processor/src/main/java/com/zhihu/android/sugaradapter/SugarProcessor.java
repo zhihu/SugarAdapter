@@ -326,7 +326,7 @@ public class SugarProcessor extends AbstractProcessor {
                 lastIndex = 0;
             }
 
-            String className = holderClass.substring(lastIndex + 1, holderClass.length()) + "$InjectDelegateImpl";
+            String className = holderClass.substring(lastIndex + 1) + "$InjectDelegateImpl";
             builder.append("package ").append(holderClass, 0, lastIndex).append(";\n\n");
 
             builder.append("import android.annotation.SuppressLint;\n");

@@ -45,6 +45,8 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    // noinspection GradleDependency
     implementation "androidx.appcompat:appcompat:${ext.androidx}"
 
     // SugarAdapter

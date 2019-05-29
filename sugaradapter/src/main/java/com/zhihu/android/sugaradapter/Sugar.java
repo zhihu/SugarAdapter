@@ -22,14 +22,14 @@ import android.support.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-enum Sugar {
+public enum Sugar {
     INSTANCE;
 
     private ContainerDelegate mContainerDelegate;
     private Map<Class<? extends SugarHolder>, InjectDelegate> mInjectMap;
 
     @NonNull
-    ContainerDelegate getContainerDelegate() {
+    public ContainerDelegate getContainerDelegate() {
         if (mContainerDelegate == null) {
             try {
                 Class delegateClass = Class.forName("com.zhihu.android.sugaradapter.ContainerDelegateImpl");
@@ -43,7 +43,7 @@ enum Sugar {
     }
 
     @Nullable
-    <T extends SugarHolder> InjectDelegate getInjectDelegate(@NonNull T t) {
+    public <T extends SugarHolder> InjectDelegate getInjectDelegate(@NonNull T t) {
         if (mInjectMap == null) {
             mInjectMap = new HashMap<>();
         }
@@ -59,7 +59,6 @@ enum Sugar {
             return delegate;
         } catch (Exception e) {
             // e.printStackTrace();
-            // noinspection ConstantConditions
             mInjectMap.put(t.getClass(), null);
             return null;
         }

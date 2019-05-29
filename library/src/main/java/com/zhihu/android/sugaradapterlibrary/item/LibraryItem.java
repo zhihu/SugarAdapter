@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Zhihu Inc.
+ * Copyright 2019 Zhihu Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,19 @@
  * limitations under the License.
  */
 
-apply from: 'ext.gradle'
+package com.zhihu.android.sugaradapterlibrary.item;
 
-buildscript {
-    repositories {
-        google()
-        jcenter()
+import androidx.annotation.NonNull;
+
+public final class LibraryItem {
+    private String mText;
+
+    public LibraryItem(@NonNull String text) {
+        mText = text;
     }
 
-    dependencies {
-        // noinspection GradleDependency
-        classpath 'com.android.tools.build:gradle:3.0.0'
-        classpath 'com.jakewharton:butterknife-gradle-plugin:10.1.0'
-        classpath 'com.novoda:bintray-release:0.8.1'
+    @NonNull
+    public String getText() {
+        return mText;
     }
-}
-
-allprojects {
-    repositories {
-        google()
-        jcenter()
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }

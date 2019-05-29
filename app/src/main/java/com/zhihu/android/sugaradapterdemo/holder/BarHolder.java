@@ -33,7 +33,6 @@ public final class BarHolder extends SugarHolder<Bar> {
         void onBarHolderViewDetachedFromWindow(@NonNull BarHolder barHolder);
     }
 
-    @SuppressWarnings("WeakerAccess")
     @Id(R.id.text)
     public AppCompatTextView mTextView;
 
@@ -43,7 +42,6 @@ public final class BarHolder extends SugarHolder<Bar> {
         super(view);
     }
 
-    @SuppressWarnings("WeakerAccess")
     public void setBarHolderListener(@Nullable BarHolderListener listener) {
         mListener = listener;
     }

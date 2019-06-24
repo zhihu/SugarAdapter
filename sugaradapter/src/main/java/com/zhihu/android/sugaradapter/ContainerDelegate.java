@@ -19,7 +19,20 @@ package com.zhihu.android.sugaradapter;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 
+import java.util.Collections;
+import java.util.Map;
+
 public interface ContainerDelegate {
+    @NonNull
+    default Map<Class<? extends SugarHolder>, Integer> getLayoutResMap() {
+        return Collections.emptyMap();
+    }
+
+    @NonNull
+    default Map<Class<? extends SugarHolder>, Class> getDataClassMap() {
+        return Collections.emptyMap();
+    }
+
     @LayoutRes
     int getLayoutRes(@NonNull Class<? extends SugarHolder> holderClass);
 

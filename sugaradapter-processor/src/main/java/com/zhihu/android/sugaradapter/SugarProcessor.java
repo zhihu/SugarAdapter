@@ -202,11 +202,13 @@ public class SugarProcessor extends AbstractProcessor {
 
         builder.append("    }\n\n");
 
+        builder.append("    @Override\n");
         builder.append("    @NonNull\n");
         builder.append("    public Map<Class<? extends SugarHolder>, Integer> getLayoutResMap() {\n");
         builder.append("        return mLayoutResMap;\n");
         builder.append("    }\n\n");
 
+        builder.append("    @Override\n");
         builder.append("    @NonNull\n");
         builder.append("    public Map<Class<? extends SugarHolder>, Class> getDataClassMap() {\n");
         builder.append("        return mDataClassMap;\n");
